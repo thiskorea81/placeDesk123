@@ -1,16 +1,14 @@
+/* src/assets/main.css */
 @charset "UTF-8";
 
-/* 리셋 및 기본 설정 */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Pretendard', 'Malgun Gothic', sans-serif; color: #333; line-height: 1.6; background-color: #f0f2f5; }
 
-/* 유틸리티 */
 .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
 .text-center { text-align: center; }
 .mt-20 { margin-top: 20px; }
 .mb-20 { margin-bottom: 20px; }
 
-/* UI 요소 */
 .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 700; color: white; transition: all 0.2s; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
@@ -24,30 +22,24 @@ body { font-family: 'Pretendard', 'Malgun Gothic', sans-serif; color: #333; line
 .form-group { margin-bottom: 15px; }
 .form-label { display: block; margin-bottom: 5px; font-weight: 600; color: #495057; }
 
-/* 인쇄 설정 */
 @media print {
   @page { size: A4 landscape; margin: 10mm; }
-  body { background-color: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { background-color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .no-print { display: none !important; }
-  .print-only { display: block !important; width: 100%; height: 95vh; }
-
-  .print-header { text-align: center; margin-bottom: 15px; border-bottom: 2px solid #333; padding-bottom: 10px; }
-  .print-title { font-size: 15pt; margin: 0; }
-  
-  .print-layout { display: flex; height: calc(100% - 70px); gap: 25px; }
-  .left-panel { flex: 3; display: flex; flex-direction: column; gap: 25px; }
-  .right-panel { flex: 1; border-left: 2px dashed #aaa; padding-left: 25px; }
-
-  .view-section { flex: 1; border: 2px solid #555; border-radius: 12px; padding: 15px; display: flex; flex-direction: column; }
-  .view-title { text-align: center; font-size: 13pt; color: #444; margin-bottom: 10px; background: #eee; padding: 5px; border-radius: 5px; }
-  
-  .screen-box { background: #ddd !important; text-align: center; padding: 6px; font-weight: bold; border-radius: 4px; border: 1px solid #999; }
-  
-  .student-list ul { list-style: none; column-count: 2; column-gap: 25px; height: 100%; font-size: 10pt; }
-  .student-list li { padding: 3px 0; border-bottom: 1px dotted #ccc; break-inside: avoid; }
-  .list-num { font-weight: bold; display: inline-block; width: 30px; color: #555; }
+  .print-only { display: block !important; width: 100%; }
+  .print-page { height: 100vh; display: flex; flex-direction: column; padding-bottom: 20px; }
+  .page-break { page-break-before: always; }
+  .print-header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #333; padding-bottom: 10px; flex-shrink: 0; }
+  .print-title { font-size: 24pt; margin: 0; }
+  .print-layout { display: flex; flex: 1; gap: 30px; overflow: hidden; }
+  .left-panel { flex: 3; display: flex; flex-direction: column; }
+  .right-panel { flex: 1; border-left: 2px dashed #aaa; padding-left: 30px; display: flex; flex-direction: column; }
+  .view-section { border: 2px solid #555; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; }
+  .view-section.full-height { flex: 1; }
+  .screen-box { background: #ddd !important; text-align: center; padding: 8px; font-weight: bold; border-radius: 4px; border: 1px solid #999; font-size: 12pt; }
+  .student-list { flex: 1; overflow: hidden; }
+  .student-list ul { list-style: none; column-count: 2; column-gap: 30px; height: 100%; font-size: 11pt; margin: 0; padding: 0; }
+  .student-list li { padding: 4px 0; border-bottom: 1px dotted #ccc; break-inside: avoid; }
+  .list-num { font-weight: bold; display: inline-block; width: 35px; color: #555; }
 }
-
-@media screen {
-  .print-only { display: none !important; }
-}
+@media screen { .print-only { display: none !important; } }

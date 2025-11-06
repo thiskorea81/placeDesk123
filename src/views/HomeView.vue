@@ -44,8 +44,8 @@
 
       <section v-if="hasResult" class="preview-section mt-20">
         <div class="view-toggle text-center mb-20">
-          <button @click="viewMode='student'" :class="['btn', viewMode==='student'?'btn-dark':'btn-light']">학생 시선</button>
-          <button @click="viewMode='teacher'" :class="['btn', viewMode==='teacher'?'btn-dark':'btn-light']">교사 시선</button>
+          <button @click="viewMode='student'" :class="['btn', viewMode==='student'?'btn-dark':'btn-light']">게시용 (학생 시선)</button>
+          <button @click="viewMode='teacher'" :class="['btn', viewMode==='teacher'?'btn-dark':'btn-light']">교탁용 (교사 시선)</button>
         </div>
 
         <div class="classroom-preview">
@@ -59,31 +59,49 @@
     </div>
 
     <div class="print-only">
-      <header class="print-header">
-        <h1 class="print-title">{{ store.grade }}학년 {{ store.classNum }}반 자리 배치표 ({{ currentMonth }}월)</h1>
-      </header>
-
-      <div class="print-layout">
-        <div class="left-panel">
-          <div class="view-section">
-            <ClassroomGrid :grid-data="store.seatingGrid" :is-print="true">
-              <template #screen-top><div class="screen-box">📺 칠판 📺</div></template>
-            </ClassroomGrid>
+      <div class="print-page">
+        <header class="print-header">
+          <h1 class="print-title">{{ store.grade }}학년 {{ store.classNum }}반 자리 배치표 ({{ currentMonth }}월) - 게시용</h1>
+        </header>
+        <div class="print-layout">
+          <div class="left-panel">
+            <div class="view-section full-height">
+              <ClassroomGrid :grid-data="store.seatingGrid" :is-print="true">
+                <template #screen-top><div class="screen-box">📺 칠판 📺</div></template>
+              </ClassroomGrid>
+            </div>
           </div>
-          <div class="view-section">
-            <ClassroomGrid :grid-data="teacherGrid" :is-print="true">
-              <template #screen-bottom><div class="screen-box">📺 교탁 📺</div></template>
-            </ClassroomGrid>
+          <div class="right-panel student-list">
+            <h2 class="list-title">명렬표</h2>
+            <ul>
+              <li v-for="s in store.sortedStudents" :key="s.number">
+                <span class="list-num">{{ s.number }}.</span> {{ s.name }}
+              </li>
+            </ul>
           </div>
         </div>
+      </div>
 
-        <div class="right-panel student-list">
-          <h2 class="list-title">명렬표</h2>
-          <ul>
-            <li v-for="s in store.sortedStudents" :key="s.number">
-              <span class="list-num">{{ s.number }}.</span> {{ s.name }}
-            </li>
-          </ul>
+      <div class="print-page page-break">
+        <header class="print-header">
+          <h1 class="print-title">{{ store.grade }}학년 {{ store.classNum }}반 자리 배치표 ({{ currentMonth }}월) - 교탁용</h1>
+        </header>
+        <div class="print-layout">
+          <div class="left-panel">
+            <div class="view-section full-height">
+              <ClassroomGrid :grid-data="teacherGrid" :is-print="true">
+                <template #screen-bottom><div class="screen-box">📺 교탁 (앞) 📺</div></template>
+              </ClassroomGrid>
+            </div>
+          </div>
+          <div class="right-panel student-list">
+            <h2 class="list-title">명렬표</h2>
+            <ul>
+              <li v-for="s in store.sortedStudents" :key="s.number">
+                <span class="list-num">{{ s.number }}.</span> {{ s.name }}
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -129,7 +147,7 @@ const downloadExampleCSV = () => {
 </script>
 
 <style scoped>
-/* 컴포넌트 전용 로컬 스타일 */
+/* 화면용 스타일 */
 .label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
 .example-link { font-size: 0.9em; color: #4dabf7; text-decoration: none; cursor: pointer; }
 .example-link:hover { text-decoration: underline; }
@@ -145,8 +163,7 @@ const downloadExampleCSV = () => {
 .view-toggle .btn-dark { background: #343a40; color: white; }
 .view-toggle .btn-light { background: #e9ecef; color: #333; }
 
-/* 인쇄 시 명렬표 제목 스타일 */
 @media print {
-  .list-title { text-align: center; font-size: 12pt; color: #555; margin-bottom: 10px; border-bottom: 1px solid #999; padding-bottom: 5px; }
+  .list-title { text-align: center; font-size: 14pt; color: #555; margin-bottom: 15px; border-bottom: 1px solid #999; padding-bottom: 5px; }
 }
 </style>
