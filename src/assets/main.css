@@ -43,3 +43,7 @@ body { font-family: 'Pretendard', 'Malgun Gothic', sans-serif; color: #333; line
   .list-num { font-weight: bold; display: inline-block; width: 35px; color: #555; }
 }
 @media screen { .print-only { display: none !important; } }
+
+.file-input-hidden {
+  display: none;
+}
