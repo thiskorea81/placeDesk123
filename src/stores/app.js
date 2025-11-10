@@ -15,7 +15,15 @@ export const useAppStore = defineStore('app', () => {
     JSON.parse(localStorage.getItem('ATTENDANCE_SETTINGS')) || defaultSettings
   )
 
-  // [수정됨] lastResetYearMonth 관련 상태 및 watch 제거
+  // [추가] apiKey가 변경되면 로컬 스토리지에 저장
+  watch(apiKey, (newKey) => {
+    localStorage.setItem('GEMINI_API_KEY', newKey)
+  })
+
+  // [추가] adminInfo가 변경되면 로컬 스토리지에 저장
+  watch(adminInfo, (newInfo) => {
+    localStorage.setItem('ADMIN_INFO', newInfo)
+  })
 
   watch(attendanceSettings, (newSettings) => {
     localStorage.setItem('ATTENDANCE_SETTINGS', JSON.stringify(newSettings))
