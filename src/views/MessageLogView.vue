@@ -95,12 +95,14 @@
   import { RouterLink } from 'vue-router'
   import { useAppStore } from '@/stores/app'
   import { useMessagesStore } from '@/stores/messages'
-  import { useTodoStore } from '@/stores/todo' // [신규] To-Do 스토어 임포트
+  import { useTodoStore } from '@/stores/todo'
+  import { useStudentStore } from '@/stores/students' // [신규] 학생 스토어 임포트
   import { GoogleGenAI } from '@google/genai'
   
   const appStore = useAppStore()
   const messagesStore = useMessagesStore()
-  const todoStore = useTodoStore() // [신규] To-Do 스토어 사용
+  const todoStore = useTodoStore()
+  const studentStore = useStudentStore() // [신규] 학생 스토어 사용
   
   const rawText = ref('')
   const sender = ref('')
@@ -108,7 +110,7 @@
   const error = ref('')
   const processedResult = ref(null) // { todos: [], notices: [] }
   
-  // GenAI 호출 함수 (변경 없음)
+  // [수정] GenAI 호출 함수 (프롬프트 강화)
   async function processMessages() {
     loading.value = true
     error.value = ''
@@ -120,9 +122,18 @@
       loading.value = false
       return
     }
+
+    // [신규] 관리자 정보 및 학생 명단 가져오기
+    const homeroomClass = appStore.adminInfo.homeroom || '담당 학급 미지정';
+    const studentNames = studentStore.masterList.map(s => s.name);
   
     const prompt = `
       당신은 한국 학교의 교사를 돕는 AI 비서입니다.
+
+      [교사 정보]
+      * 담당 학급: ${homeroomClass}
+      * 담당 학급 학생 명단: [${studentNames.join(', ')}]
+
       다음은 교사가 받은 메신저 내용입니다.
       발신자: "${sender.value || '지정 안 됨'}"
       메시지:
@@ -130,7 +141,14 @@
       ${rawText.value}
       ---
   
+      [요청 사항]
       이 메시지 내용을 분석하여, 교사가 '해야 할 일(todos)'과 '학생들에게 전달할 사항(notices)'으로 요약 정리해주세요.
+      
+      [중요]
+      만약 메시지 내용에 위 [담당 학급 학생 명단]에 포함된 학생의 이름이 언급되면, 
+      **해당 학생의 이름을 '해야 할 일' 또는 '전달 사항'에 반드시 명시**해주세요.
+      (예: "OOO 학생 결석 사유 확인하기", "OOO 학생에게 전달사항 고지")
+
       반드시 다음의 JSON 형식으로만 응답해주세요:
       {
         "todos": ["해야 할 일 1", "해야 할 일 2", ...],
@@ -152,7 +170,8 @@
         jsonResponse = JSON.parse(jsonText);
       } catch (parseError) {
         console.error("AI 응답 JSON 파싱 실패:", parseError);
-        jsonResponse = { todos: [response.text], notices: [] };
+        // JSON 파싱 실패 시, 원본 텍스트를 "해야 할 일"에 넣음
+        jsonResponse = { todos: [response.text || "AI 응답 파싱 실패"], notices: [] };
       }
   
       processedResult.value = jsonResponse;
@@ -160,13 +179,13 @@
     } catch (e) {
       console.error(e);
       error.value = `[GenAI 오류] ${e.message || '알 수 없는 오류가 발생했습니다.'}`
-      processedResult.value = { todos: [], notices: [`오류 발생: ${e.message}`] };
+      processedResult.value = { todos: [`오류 발생: ${e.message}`], notices: [] };
     } finally {
       loading.value = false
     }
   }
   
-  // [수정됨] 이력에 저장 및 To-Do 리스트로 전송
+  // [수정됨] 이력에 저장 및 To-Do 리스트로 전송 (로직 변경 없음)
   function saveToLog() {
     if (!processedResult.value) return;
   
@@ -183,7 +202,7 @@
     messagesStore.addLog(entry);
   
     let todoCount = 0;
-    // 2. [신규] '해야할 일'을 To-Do 스토어로 전송
+    // 2. '해야할 일'을 To-Do 스토어로 전송
     if (processedResult.value.todos && processedResult.value.todos.length > 0) {
       processedResult.value.todos.forEach(todoText => {
         todoStore.addTodo(todoText); // To-Do 리스트에 추가

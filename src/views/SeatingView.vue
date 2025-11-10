@@ -33,7 +33,7 @@
           <div class="settings-grid">
             <div class="form-group">
               <label class="form-label">가로 좌석 수</label>
-              <input type="number" v-model.number="store.columns" min="1" max="10" class="form-control" />
+              <input type="number" v-model.number="store.columns" min="5" max="8" class="form-control" />
             </div>
             <div class="form-group">
               <label class="form-label">시력 우선 (앞 2줄)</label>

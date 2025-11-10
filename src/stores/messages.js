@@ -14,12 +14,16 @@ export const useMessagesStore = defineStore('messages', () => {
   // 이력 추가
   function addLog(entry) {
     // { id, date, sender, original, todos, notices }
-    log.value.unshift(entry) // 새 항목을 맨 위에 추가
+    
+    // [수정] 배열을 직접 수정(unshift)하는 대신, 새 배열을 할당하여 watch가 안정적으로 동작하도록 함
+    const newLog = [entry, ...log.value];
 
     // 이력은 최대 50개까지만 보관 (선택 사항)
-    if (log.value.length > 50) {
-      log.value.pop()
+    if (newLog.length > 50) {
+      newLog.splice(50); // 50개 초과분 잘라내기
     }
+
+    log.value = newLog; // ref에 새 배열 할당
   }
 
   // 이력 삭제

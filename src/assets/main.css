@@ -33,14 +33,37 @@ body { font-family: 'Pretendard', 'Malgun Gothic', sans-serif; color: #333; line
   .print-title { font-size: 24pt; margin: 0; }
   .print-layout { display: flex; flex: 1; gap: 30px; overflow: hidden; }
   .left-panel { flex: 3; display: flex; flex-direction: column; }
-  .right-panel { flex: 1; border-left: 2px dashed #aaa; padding-left: 30px; display: flex; flex-direction: column; }
+  .right-panel { flex: 2; border-left: 2px dashed #aaa; padding-left: 30px; display: flex; flex-direction: column; }
   .view-section { border: 2px solid #555; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; }
   .view-section.full-height { flex: 1; }
   .screen-box { background: #ddd !important; text-align: center; padding: 8px; font-weight: bold; border-radius: 4px; border: 1px solid #999; font-size: 12pt; }
   .student-list { flex: 1; overflow: hidden; }
-  .student-list ul { list-style: none; column-count: 2; column-gap: 30px; height: 100%; font-size: 11pt; margin: 0; padding: 0; }
-  .student-list li { padding: 4px 0; border-bottom: 1px dotted #ccc; break-inside: avoid; }
-  .list-num { font-weight: bold; display: inline-block; width: 35px; color: #555; }
+  .student-list ul { 
+    list-style: none; 
+    column-count: 2; 
+    column-gap: 30px; 
+    height: 100%; 
+    font-size: 0.9em; 
+    margin: 0; 
+    padding: 0; 
+  }
+
+  /* --- [수정된 부분] --- */
+  .student-list li { 
+    padding: 4px 0; 
+    border-bottom: 1px dotted #ccc; 
+    break-inside: avoid; 
+    font-size: 0.9em; 
+    /* 이름이 두 줄로 나뉘는 것을 방지합니다. 
+      이름이 너무 길 경우, 말임표(...)로 처리됩니다. 
+    */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* --- [수정 완료] --- */
+
+  .list-num { font-weight: bold; display: inline-block; width: 35px; color: #555; font-size: 0.9em; }
 }
 @media screen { .print-only { display: none !important; } }
 

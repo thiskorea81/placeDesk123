@@ -16,11 +16,22 @@
   
       <section class="controls-panel mb-20">
         <h2>관리자 정보</h2>
-        <div class="form-group">
-          <label class="form-label">관리자 이름:</label>
-          <input type="text" v-model="localAdminInfo" class="form-control" placeholder="예: 홍길동" />
+        <div class="settings-grid">
+          <div class="form-group">
+            <label class="form-label">관리자 이름:</label>
+            <input type="text" v-model="localAdminInfo.name" class="form-control" placeholder="예: 홍길동" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">맡은 업무:</label>
+            <input type="text" v-model="localAdminInfo.role" class="form-control" placeholder="예: 1학년 부장" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">담당 학급:</label>
+            <input type="text" v-model="localAdminInfo.homeroom" class="form-control" placeholder="예: 1학년 1반" />
+          </div>
         </div>
         <button @click="saveAdminInfo" class="btn btn-primary">정보 저장</button>
+        <small v-if="adminInfoStatus" class="status-badge success">✅ 저장됨</small>
       </section>
   
       <section class="controls-panel mb-20">
@@ -81,8 +92,12 @@
   // App 스토어 (API 키, 관리자 정보, 출결 설정)
   const appStore = useAppStore()
   const localApiKey = ref(appStore.apiKey)
-  const localAdminInfo = ref(appStore.adminInfo)
+  
+  // localAdminInfo를 스토어 객체의 복사본으로 초기화
+  const localAdminInfo = ref({ ...appStore.adminInfo })
+  
   const apiKeyStatus = ref(false)
+  const adminInfoStatus = ref(false) // 관리자 정보 저장 상태
   
   // 출결 설정을 스토어에서 복사해옴
   const localSettings = ref({ ...appStore.attendanceSettings })
@@ -93,8 +108,12 @@
     apiKeyStatus.value = true
     setTimeout(() => apiKeyStatus.value = false, 2000)
   }
+  
+  // saveAdminInfo가 localAdminInfo 객체 자체를 저장하도록
   const saveAdminInfo = () => {
-    appStore.setAdminInfo(localAdminInfo.value)
+    appStore.setAdminInfo(localAdminInfo.value) // 객체를 스토어에 전달
+    adminInfoStatus.value = true
+    setTimeout(() => adminInfoStatus.value = false, 2000)
   }
   
   // 출결 설정 저장
